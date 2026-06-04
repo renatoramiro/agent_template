@@ -1,13 +1,17 @@
 # 🤖 {{AGENT_NAME_DISPLAY}} - Template de Agente
 
-Template genérico para criar agentes com `agent-base` + Telegram.
+Template genérico para criar agentes com `agent-base` + **Telegram** ou **WhatsApp**.
 
 ## 📁 Estrutura
 
 ```
 .
 ├── agent.yaml              # Configuração principal do agente
-├── bot.py                  # Adapter Telegram (não precisa editar)
+├── bot_telegram.py         # Bot Telegram (polling)
+├── bot_whatsapp.py         # Bot WhatsApp (webhook server)
+├── adapters/               # Adapters de plataforma
+│   ├── telegram.py
+│   └── whatsapp.py
 ├── requirements.txt        # Dependências Python
 ├── .env.example            # Template de variáveis de ambiente
 ├── Dockerfile              # Container Docker
@@ -74,12 +78,29 @@ def minha_skill(parametro: str) -> str:
 
 ### 6. Execute
 
-**Local:**
+Escolha a plataforma:
+
+#### 🚀 Telegram (mais simples)
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python bot.py
+python bot_telegram.py
+```
+
+#### 📱 WhatsApp (requer Evolution API)
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 1. Configure o webhook (apenas uma vez)
+python bot_whatsapp.py --setup-webhook --webhook-url https://seubot.com/webhook/whatsapp
+
+# 2. Inicie o servidor
+python bot_whatsapp.py --port 8000
 ```
 
 **Docker:**
@@ -117,13 +138,33 @@ def listar_chamados() -> str:
 ```
 
 ### 4. Configurar e rodar
+
+**Telegram:**
 ```bash
 cp .env.example .env
-# editar .env
-python bot.py
+# editar .env (TELEGRAM_BOT_TOKEN)
+python bot_telegram.py
 ```
 
-## 🔧 Personalização avançada
+**WhatsApp:**
+```bash
+cp .env.example .env
+# editar .env (EVOLUTION_*)
+python bot_whatsapp.py --setup-webhook --webhook-url https://seubot.com/webhook/whatsapp
+python bot_whatsapp.py --port 8000
+```
+
+## � Comparação: Telegram vs WhatsApp
+
+| Feature | Telegram | WhatsApp |
+|---------|----------|----------|
+| Setup | Muito simples | Requer Evolution API |
+| Hosting | Local/Cloud | Precisa de servidor web |
+| Webhook | Não (polling) | Sim |
+| Portas | Nenhuma | 8000+ |
+| Sessões | por `user_id` | por `número de telefone` |
+
+## �🔧 Personalização avançada
 
 ### Mudar o provider LLM
 
@@ -159,6 +200,7 @@ skills/
 ## 📚 Referência
 
 - **agent-base**: https://github.com/renatoramiro/agent-base
+- **Evolution API**: https://doc.evolution-api.com/
 - **python-telegram-bot**: https://docs.python-telegram-bot.org/
 - **Groq API**: https://console.groq.com/docs
 

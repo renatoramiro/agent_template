@@ -76,7 +76,8 @@ def main():
     template_dir = Path(__file__).parent
     files_to_process = [
         template_dir / "agent.yaml",
-        template_dir / "bot.py",
+        template_dir / "bot_telegram.py",
+        template_dir / "bot_whatsapp.py",
         template_dir / "docker-compose.yml",
         template_dir / "skills" / "__init__.py",
         template_dir / "skills" / "example_skill.py",
@@ -91,9 +92,11 @@ def main():
     print(f"\n🎉 Agente '{agent_display}' inicializado!")
     print("\nPróximos passos:")
     print("1. cp .env.example .env")
-    print("2. Edite .env com suas chaves")
+    print("2. Edite .env com suas chaves (Telegram ou WhatsApp)")
     print("3. Customize as skills em skills/")
-    print("4. python bot.py")
+    print("4. Execute:")
+    print("   Telegram:  python bot_telegram.py")
+    print("   WhatsApp:  python bot_whatsapp.py --port 8000")
 
 
 if __name__ == "__main__":
