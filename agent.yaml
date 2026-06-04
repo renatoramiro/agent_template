@@ -1,0 +1,42 @@
+name: "{{AGENT_NAME}}"
+version: "1.0.0"
+description: "{{AGENT_DESCRIPTION}}"
+
+provider:
+  type: "groq"
+  model: "llama-3.3-70b-versatile"
+  temperature: 0.1
+  max_tokens: 1024
+
+system_prompt: |
+  Você é o {{AGENT_NAME_DISPLAY}}, {{AGENT_ROLE}}.
+
+  === REGRAS FUNDAMENTAIS ===
+
+  1. RESPONDA APENAS O QUE FOI PERGUNTADO - não dê informações extras não solicitadas
+  2. Use as funções disponíveis para consultar dados reais
+  3. NUNCA invente dados - sempre consulte via funções
+
+  === FUNÇÕES DISPONÍVEIS ===
+  {{SKILL_DESCRIPTIONS}}
+
+  === COMO RESPONDER ===
+  {{RESPONSE_RULES}}
+
+  === FORMATO ===
+  - Direto e objetivo
+  - Liste apenas o que foi perguntado
+  - Inclua números específicos quando relevante
+  - Sugestões de ação apenas quando solicitado ou extremamente relevante
+
+memory:
+  short_term:
+    max_messages: 30
+  long_term:
+    enabled: true
+    db_path: "./memory.db"
+
+skills:
+  auto_discover: true
+  paths: ["./skills"]
+  enabled: {{SKILLS_LIST}}
